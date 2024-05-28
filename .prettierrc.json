@@ -1,0 +1,23 @@
+{
+	"semi": true,
+	"tabWidth": 4,
+	"useTabs": true,
+	"printWidth": 200,
+	"singleQuote": false,
+	"trailingComma": "all",
+	"overrides": [
+		{
+			"files": "*.yml",
+			"options": {
+				"useTabs": false
+			}
+		},
+		{
+			"files": "*.md",
+			"options": {
+				"useTabs": false,
+				"tabWidth": 2
+			}
+		}
+	]
+}

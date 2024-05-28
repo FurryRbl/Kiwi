@@ -1,0 +1,5 @@
+# Node 模块
+/node_modules
+
+# 构建输出
+/build

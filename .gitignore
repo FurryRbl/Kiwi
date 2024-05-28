@@ -1,0 +1,11 @@
+# 日志
+*.log
+
+# MacOS 文件
+.DS_Store
+
+# Node模块
+node_modules
+
+# 构建输出
+/build
