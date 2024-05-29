@@ -1,23 +1,31 @@
+import fs from "fs";
 import moment from "moment";
 import path from "node:path";
 import webpack from "webpack";
-import simpleGit from "simple-git";
+import git from "isomorphic-git";
 import TerserPlugin from "terser-webpack-plugin";
 
-const generateBuildInfo = () => {
-	const git = simpleGit();
+const generateBuildInfo = async () => {
+	const dir = process.cwd();
 
-	console.log(git.branchLocal());
+	const branchPromise = git.currentBranch({ fs, dir }).catch(() => "未知");
+	const commitPromise = git
+		.log({ fs, dir })
+		.then((log) => log[0]?.oid || "未知")
+		.catch(() => "未知");
+
+	const [branch, commit] = await Promise.all([branchPromise, commitPromise]);
 
 	return {
 		TIME: JSON.stringify(moment().format("YYYY-MM-DD HH:mm:ss")),
-		GIT_BRANCH: git.branchLocal(),
-		GIT_COMMIT: git.revparse(["HEAD"]),
+		GIT_BRANCH: branch || "未知",
+		GIT_COMMIT: commit || "未知",
 	};
 };
 
-export default (env: Object, argv: any) => {
+export default async (env: Object, argv: any) => {
 	const isDevelopmentMode = argv.mode === "development";
+	const buildInfo = await generateBuildInfo();
 
 	const config: webpack.Configuration = {
 		target: "node",
@@ -47,13 +55,13 @@ export default (env: Object, argv: any) => {
 			],
 		},
 		optimization: {
-			minimize: isDevelopmentMode ? false : true,
+			minimize: !isDevelopmentMode,
 			minimizer: [new TerserPlugin()],
 		},
 		plugins: [
 			new webpack.ProgressPlugin(),
 			new webpack.DefinePlugin({
-				BUILD_INFO: generateBuildInfo(),
+				BUILD_INFO: JSON.stringify(buildInfo),
 			}),
 		],
 		watch: isDevelopmentMode,

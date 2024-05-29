@@ -1,5 +1,9 @@
 import minimist from "minimist";
 import Command from "./utils/command";
+import registerCommand from "./registerCommand";
 
 const command = new Command();
-command.run(minimist(process.argv.slice(2)));
+
+registerCommand(command);
+
+command.run(process.argv[2], minimist(process.argv.slice(3)));

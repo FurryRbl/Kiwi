@@ -11,10 +11,13 @@
 		"android"
 	],
 	"files": [
+		"src",
+		"types",
 		"build",
 		"LICENSE",
 		"README.md",
-		"package.json"
+		"package.json",
+		"tsconfig.json"
 	],
 	"repository": {
 		"type": "git",
@@ -45,14 +48,14 @@
 		"@babel/preset-env": "^7.24.6",
 		"@types/minimist": "^1.2.5",
 		"@types/node": "^20.12.12",
+		"@types/yargs": "^17.0.32",
 		"babel-loader": "^9.1.3",
 		"eslint": "^9.2.0",
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-prettier": "^5.0.0",
+		"isomorphic-git": "^1.25.10",
 		"node-loader": "^2.0.0",
-		"prettier": "^3.0.2",
 		"rimraf": "^5.0.7",
-		"simple-git": "^3.24.0",
 		"sucrase": "^3.35.0",
 		"terser-webpack-plugin": "^5.3.10",
 		"ts-loader": "^9.5.1",
@@ -69,6 +72,7 @@
 		"log-symbols": "^6.0.0",
 		"minimist": "^1.2.8",
 		"moment": "^2.30.1",
-		"ora": "^8.0.1"
+		"ora": "^8.0.1",
+		"prettier": "^3.2.5"
 	}
 }
