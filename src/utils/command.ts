@@ -1,55 +1,49 @@
+import chalk from "chalk";
 import Fuse from "fuse.js";
-import minimist, { ParsedArgs } from "minimist";
+import minimist from "minimist";
 import packageMetadata from "/package.json";
 
-interface CommandOptions {
+interface CommandInfo {
 	description: string;
-	func: (args: ParsedArgs) => void;
+	func: (args: minimist.ParsedArgs) => void;
+	hidden?: boolean;
 }
-
-interface BuildInfo {
-	TIME: string;
-	GIT_BRANCH: string;
-	GIT_COMMIT: string;
-}
-
-declare const BUILD_INFO: BuildInfo;
 
 export default class Command {
-	private commands: Map<string, { description: string; func: (args: minimist.ParsedArgs) => void; hidden?: boolean }>;
+	private commands: Map<string, CommandInfo>;
 
 	constructor() {
 		this.commands = new Map();
 
-		this.register("help", "显示帮助信息", this.showHelp);
-		this.register("--help", "显示帮助信息", this.showHelp, true);
-		this.register("-h", "显示帮助信息", this.showHelp, true);
+		const helpCommand = { description: "显示帮助信息", func: this.showHelp, hidden: true };
+		const versionCommand = { description: "显示版本信息", func: this.showVersion, hidden: true };
 
-		this.register("version", "显示版本信息", this.showVersion);
-		this.register("--version", "显示版本信息", this.showVersion, true);
-		this.register("-v", "显示版本信息", this.showVersion, true);
+		this.register("help", helpCommand.description, helpCommand.func);
+		this.register("--help", helpCommand.description, helpCommand.func, true);
+		this.register("-h", helpCommand.description, helpCommand.func, true);
+
+		this.register("version", versionCommand.description, versionCommand.func);
+		this.register("--version", versionCommand.description, versionCommand.func, true);
+		this.register("-v", versionCommand.description, versionCommand.func, true);
 	}
 
 	private showVersion = (): void => {
-		const version = [
-			"Kiwi 版本：" + packageMetadata.version + "，构建日期：" + BUILD_INFO.TIME,
-			"构建分支：" + BUILD_INFO.GIT_BRANCH + "，提交哈希：" + BUILD_INFO.GIT_COMMIT + "\n",
+		const versionInfo = [
+			`Kiwi 版本：${packageMetadata.version}，构建日期：${BUILD_INFO.TIME}`,
+			`构建分支：${BUILD_INFO.GIT_BRANCH}，提交哈希：${BUILD_INFO.GIT_COMMIT}\n`,
 		];
-
-		console.log(version.join("\n"));
+		console.log(versionInfo.join("\n"));
 	};
 
-	/** 显示帮助信息 */
+	/**
+	 * 显示帮助信息
+	 */
 	private showHelp = (): void => {
 		const allCommands = Array.from(this.commands.entries())
 			.filter(([_, { hidden }]) => !hidden)
-			.map(([name, { description }]) => "\t" + name + ": " + description);
+			.map(([name, { description }]) => `\t${name}: ${description}`);
 
-		const help = [
-			"使用：Kiwi [命令] [选项]\n", //
-			"所有命令：",
-			...allCommands,
-		];
+		const help = ["使用：Kiwi [命令] [选项]\n", "所有命令：", ...allCommands];
 
 		this.showVersion();
 		console.log(help.join("\n"));
@@ -70,7 +64,7 @@ export default class Command {
 	/**
 	 * 运行命令
 	 * @param {string} name - 命令名称
-	 * @param {string} args - 参数
+	 * @param {minimist.ParsedArgs} args - 参数
 	 * @returns {void}
 	 */
 	run(name: string | undefined, args: minimist.ParsedArgs): void {
@@ -80,26 +74,26 @@ export default class Command {
 		}
 
 		const command = this.commands.get(name);
-
 		if (command) {
 			command.func(args);
+			return;
+		}
+
+		const visibleCommands = Array.from(this.commands.entries())
+			.filter(([_, { hidden }]) => !hidden)
+			.map(([name]) => ({ item: name }));
+
+		const fuse = new Fuse(visibleCommands, {
+			keys: ["item"],
+			threshold: 0.4,
+		});
+
+		const result = fuse.search(name).map(({ item }) => item);
+
+		if (result.length > 0) {
+			console.error(chalk.red(`未知的命令：‘${name}’\n你可能想要使用这些命令：${result.join(", ")}`));
 		} else {
-			const commandsArray = Array.from(this.commands.entries())
-				.filter(([_, { hidden }]) => !hidden)
-				.map(([name, _]) => ({ item: name }));
-
-			const fuse = new Fuse(commandsArray, {
-				keys: ["item"],
-				threshold: 0.9,
-			});
-
-			const result = fuse.search(name).map(({ item }) => item); // 提取搜索结果中的命令名称
-
-			if (result.length > 0) {
-				console.error(`未知的命令：‘${name}’\n你可能想要使用这些命令：${result.map((item) => item.item).join(", ")}`);
-			} else {
-				console.error(`未知的命令：‘${name}’`);
-			}
+			console.error(chalk.red(`未知的命令：‘${name}’`));
 		}
 	}
 }
