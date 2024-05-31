@@ -35,14 +35,22 @@ export default async (env: Object, argv: any) => {
 			libraryTarget: "commonjs",
 			filename: "index.cjs",
 		},
+		cache: {
+			type: "filesystem",
+			cacheDirectory: path.resolve(".cache"),
+		},
 		resolve: {
 			extensions: [".ts", ".js"],
 		},
 		module: {
 			rules: [
 				{
-					test: /\.(ts|js)$/,
+					test: /\.ts$/,
 					use: ["babel-loader", "ts-loader"],
+				},
+				{
+					test: /\.js$/,
+					use: ["babel-loader"],
 				},
 				{
 					test: /\.node$/,
