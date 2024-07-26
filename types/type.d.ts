@@ -4,7 +4,7 @@ declare const BUILD_INFO: {
 	GIT_COMMIT: string;
 };
 
-declare module "*package.json" {
-	const value: import("type-fest").PackageJson;
+declare module '*package.json' {
+	const value: import('type-fest').PackageJson;
 	export default value;
 }

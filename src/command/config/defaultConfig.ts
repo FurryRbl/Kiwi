@@ -1,16 +1,20 @@
 export interface Config {
-	icon: boolean;
+	iconText: boolean;
 	colorText: boolean;
-	logging: string;
+	debug: boolean;
+	SponsorshipTips: boolean;
+	language: string;
 }
 
 /**
  * 默认配置文件
  */
 export const defaultConfig: Config = {
-	icon: true,
+	iconText: true,
 	colorText: true,
-	logging: "info",
+	debug: false,
+	SponsorshipTips: true,
+	language: 'en_us',
 };
 
 /**
