@@ -1,52 +1,92 @@
-# 奇异果——Android系统工具箱
+<!-- markdownlint-disable MD033 MD041 MD045 -->
+
+<div align="center">
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S8L8OOP)
+[![爱发电](https://img.shields.io/badge/%E7%88%B1%E5%8F%91%E7%94%B5_Afdian-946CE6?style=for-the-badge)](https://ifdian.net/a/SharpIce)
+
+</div>
+
+<hr>
 
 ## 命令
 
-### help
+### 1.help
 
-显示帮助信息
+Display help information
 
-相同命令：`--help`、`-h`
+usage: `Kiwi help`
 
-用法：`Kiwi help`
+Similar commands: `--help`、`-h`
 
-### version
+### 2.version
 
-显示版本信息
+Display version information
 
-相同命令：`--version`、`-v`
+usage: `Kiwi version`
 
-用法：`Kiwi version`
+Similar commands: `--version`、`-v`
 
-### config
+### 3.config
 
-添加、修改、移除配置项
+Add, modify, and delete configuration items
 
-子命令：
+usage: `Kiwi config [Subcommands] [Options]`
 
-- add 添加配置项，当然也可以用于修改配置项，例：`Kiwi config add icon=false logging="debug" ...`
-- delete 添加配置项，例：`Kiwi config delete icon logging ...`
-- list 列出所有的配置项
+Subcommands:
 
-目前支持的配置：
+- add - Add configuration items. Of course, it can also be used to modify configuration items. For example: `Kiwi config add icon=false logging="debug" ...`
+- delete - Add configuration items, for example: `Kiwi config delete icon logging ...`
+- list - List all configuration items
 
-- icon 输出是否包含图标
-- logging 输出的日志等级
+Related configurations:
 
-### brotli
+| Configuration item |  Type   |              Description               | Default value |
+| :----------------: | :-----: | :------------------------------------: | :-----------: |
+|      iconText      | Boolean | Whether to include icons in the output |     true      |
+|     colorText      | Boolean |   Whether to output colored content    |     true      |
+|  SponsorshipTips   | Boolean |  Whether to display sponsorship tips   |     true      |
+|      language      | string  |            Set the language            |     en_us     |
 
-解压/压缩后缀为 ‘.br’ 的 brotli 压缩文件，例如`vendor.new.dat.br`
+### 4.brotli
 
-用法：`Kiwi brotli [选项] [位置] -o [位置]`
+Unzip/compress brotli compressed files with the suffix ‘.br’, such as `system.new.dat.br` or `vendor.new.dat.br` files
 
-例：
+usage: `Kiwi brotli [Options] [Path] -o [Path]`
 
-- 解压： `Kiwi brotli -u /path/vendor.new.dat.br -o /path/vendor.img`
-- 压缩： `Kiwi brotli -c /path/vendor.img -o /path/vendor.new.dat.br`
+example:
 
-选项：
+- Unzip: `Kiwi brotli -u /path/vendor.new.dat.br -o /path/vendor.img`
+- Compression: `Kiwi brotli -c /path/vendor.img -o /path/vendor.new.dat.br`
 
-- `-u` 解压
-- `-c` 压缩
-- `-o` 输出位置
-- `--level` 压缩等级，范围：0-11，默认：0，推荐3~5
+Options:
+
+- `-u` Unzip
+- `-c` Compression
+- `-o` Output location
+- `--level` Compression level, range: 0-11, default: 0, recommended 3~5
+
+### 5.transfer2img
+
+Convert the file with the suffix `*.new.dat` and `*.transfer.list` to an img file, for example `system.new.dat` and `system.transfer.list`
+
+usage: `Kiwi transfer2img [*.new.dat file path] [*.transfer.list file path] [output path]`
+
+Example: `Kiwi transfer2img /path/vendor.new.dat /path/vendor.transfer.list /path/vendor.img`
+
+### 6.vbmeta
+
+vbmeta related tools
+
+usage: `Kiwi vbmeta [Subcommands] [vbmeta file path]`
+
+Subcommands:
+
+- info - Get vbmeta information
+- disable_verify - Disable AVB verification for vbmeta files
+
+### 7.check
+
+Check whether the operating environment is compatible
+
+usage: `Kiwi check`

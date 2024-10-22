@@ -2,7 +2,8 @@
 	"compilerOptions": {
 		"strict": true,
 		"allowJs": true,
-		"target": "ESNext",
+		"sourceMap": true,
+		"target": "ES2020",
 		"module": "ESNext",
 		"esModuleInterop": true,
 		"resolveJsonModule": true,

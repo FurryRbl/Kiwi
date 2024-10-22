@@ -8,7 +8,4 @@
 node_modules
 
 # 构建输出
-/build
-
-# 构建缓存
-/.cache
+/dist
